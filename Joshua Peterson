@@ -8,49 +8,30 @@
 # 4. get the value of mean of the matrix
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  m<-NULL
+  set<-function(y){
+    x<<-y
+    m<<-NULL
+  }
+  get<-function() x
+  setmatrix<-function(solve) m<<- solve
+  getmatrix<-function() m
+  list(set=set, get=get,
+       setmatrix=setmatrix,
+       getmatrix=getmatrix)
 }
 
-get <- function() x
-  setmean <- function(mean) inv <<- mean
-  getmean <- function() m
-  list(set=set, get=get, setmean=setmean, getmean=getmean)
-}
-
-
-The following function calculates the mean of the special "vector" created with the above function. 
-#checks to see if the mean has already been calculated. 
-#It gets the mean from the cache and skips the computation. 
-#Calculates the mean of the data and sets the value of the mean in the cache via the setmean function.
-
-cachemean <- function(x, ...) {
-  inv <- x$getmean()
-  if(!is.null(m)) {
-    message("getting cached data.")
+cacheSolve <- function(x=matrix(), ...) {
+  m<-x$getmatrix()
+  if(!is.null(m)){
+    message("getting cached data")
     return(m)
   }
-  data <- x$get()
-  m <- meaan(data, ...)
-  x$setmean(m)
+  matrix<-x$get
+  m<-solve(matrix, ...)
+  x$setmatrix(m)
   m
 }  
 
-## Sample run:
-## > x = rbind(c(1, -1/2), c(-1/2, 1))
-## > m = makeCacheMatrix(x)
-## > m$get()
-##       [,1]  [,2]
-## [1,]  1.00 -0.50
-## [2,] -0.50  1.00
-
-## Retrieving from the cache in the second run
-## > cacheSolve(m)
-## getting cached data.
-[1,] 1.3333333 0.6666667
-[2,] 0.6666667 1.3333333
-> 
-> cacheSolve(m)
-getting cached data.
-          [,1]      [,2]
-[1,] 1.3333333 0.6666667
-[2,] 0.6666667 1.3333333
+# Calculate the inverse of the special "matrix" created with the above
+# function, reusing cached result if it is available
